@@ -268,7 +268,7 @@ namespace MissionPlanner.GCSViews
                 if (cmbRcStep != null)
                 {
                     cmbRcStep.Items.Clear();
-                    cmbRcStep.Items.AddRange(new object[] { "15%", "25%", "30%" });
+                    cmbRcStep.Items.AddRange(new object[] { "5%", "15%", "25%" });
                     cmbRcStep.SelectedIndex = 1; // default 25%
                     cmbRcStep.SelectedIndexChanged += (s, e2) => UpdateRcStepFromUI();
                 }
@@ -278,8 +278,8 @@ namespace MissionPlanner.GCSViews
                     //触发事件
                     //加上键盘控制
 
-                    dpadLeft.UpChanged += (s, a) => RcStep_Send(a, 0, 0, +_rcStepPwm, 0);      // Throttle up (disabled)
-                    dpadLeft.DownChanged += (s, a) => RcStep_Send(a, 0, 0, -_rcStepPwm, 0);    // Throttle down (disabled)
+                    dpadLeft.UpChanged += (s, a) => RcStep_Send(a, 0, 0, -_rcStepPwm, 0);      // Throttle up (disabled)
+                    dpadLeft.DownChanged += (s, a) => RcStep_Send(a, 0, 0, +_rcStepPwm, 0);    // Throttle down (disabled)
                     dpadLeft.LeftChanged += (s, a) => RcStep_Send(a, 0, 0, 0, -_rcStepPwm);    // Yaw left
                     dpadLeft.RightChanged += (s, a) => RcStep_Send(a, 0, 0, 0, +_rcStepPwm);   // Yaw right
                 }
