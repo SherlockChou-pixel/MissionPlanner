@@ -584,6 +584,23 @@ namespace MissionPlanner.GCSViews
                 setQuickViewRowsCols(Settings.Instance["quickViewCols"], Settings.Instance["quickViewRows"]);
             }
 
+            // 检查是否是第一次运行（没有任何quickView设置）
+            bool isFirstRun = true;
+            for (int f = 1; f < 30; f++)
+            {
+                if (Settings.Instance["quickView" + f] != null)
+                {
+                    isFirstRun = false;
+                    break;
+                }
+            }
+
+            // 如果是第一次运行，初始化默认参数
+            if (isFirstRun)
+            {
+                InitializeDefaultQuickViewParameters();
+            }
+
             for (int f = 1; f < 30; f++)
             {
                 // load settings
@@ -5604,6 +5621,52 @@ namespace MissionPlanner.GCSViews
             else
             {
                 CaptureMJPEG.Stop();
+            }
+        }
+
+        /// <summary>
+        /// 初始化默认的QuickView参数（第一次运行时调用）
+        /// </summary>
+        private void InitializeDefaultQuickViewParameters()
+        {
+            // 根据用户列出的参数，设置默认的QuickView参数映射
+            // 这些参数会在第一次运行时自动被选中
+            var defaultParams = new Dictionary<int, string>
+            {
+                { 1, "alt" },                    // Altitude (m)
+                { 2, "groundspeed" },            // 地速(m/s)
+                { 3, "gpshdop" },                // GPS HDOP
+                { 4, "battery_voltage" },        // 电池电压M
+                { 5, "battery_voltage2" },       // 电池2电压M
+                { 6, "nav_pitch" },              // 俯仰目标(deg)
+                { 7, "pitch" },                  // 俯仰(deg)
+                { 8, "ter_curalt" },             // Terain AGL
+                { 9, "ay" },                     // 加速度Y
+                { 10, "verticalspeed" },         // 升降速度(m/s)
+                { 11, "distTraveled" },          // 行驶距离(m)
+                { 12, "DistToHome" },            // Dist to Home (m)
+                { 13, "timeInAir" },             // 留空时间 (sec)
+                { 14, "gpshdop2" },              // Gps HDOP2
+                { 15, "satcount" },              // 卫星数
+                { 16, "watts" },                 // 电池瓦数
+                { 17, "current" },               // 电池电流(Amps)
+                { 18, "satcount2" },             // Sat Count2
+                { 19, "current2" },              // 包池2电流(Amps)
+                { 20, "rangefinder1" },          // rangeFinder
+                { 21, "battery_remaining" },     // 电池剩余(%)
+                { 22, "nav_roll" },              // 横滚目标(deg)
+                { 23, "roll" },                  // 横滚(deg)
+                { 24, "lat" },                   // 纬度 (dd)
+                { 25, "lng" },                   // 经度(dd)
+                { 26, "az" },                    // 加速度Z
+                { 27, "gx" },                    // 陀螺仪X
+                { 28, "rpm2" }                 // rpm2
+            };
+
+            // 将默认参数保存到Settings中
+            foreach (var param in defaultParams)
+            {
+                Settings.Instance["quickView" + param.Key] = param.Value;
             }
         }
 
