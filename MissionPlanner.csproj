@@ -9,7 +9,7 @@
     <Company>Michael Oborne</Company>
     <Product>Mission Planner</Product>
     <Description>Mission Planner ground control station for ardupilot</Description>
-    <Copyright>Copyright © Michael Oborne 2010-2024</Copyright>
+    <Copyright>Copyright  Michael Oborne 2010-2024</Copyright>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
@@ -30,6 +30,7 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     <UseWindowsForms>true</UseWindowsForms>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
 		<Deterministic>False</Deterministic>

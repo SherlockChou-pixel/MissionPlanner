@@ -5,6 +5,7 @@
     <ApplicationIcon />
     <OutputTypeEx>library</OutputTypeEx>
     <StartupObject />
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <DebugType>portable</DebugType>
     <DebugSymbols>True</DebugSymbols>
