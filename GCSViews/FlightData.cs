@@ -579,11 +579,6 @@ namespace MissionPlanner.GCSViews
                 hud1.Dock = DockStyle.Fill;
             }
 
-            if (Settings.Instance.ContainsKey("quickViewRows"))
-            {
-                setQuickViewRowsCols(Settings.Instance["quickViewCols"], Settings.Instance["quickViewRows"]);
-            }
-
             // 检查是否是第一次运行（没有任何quickView设置）
             bool isFirstRun = true;
             for (int f = 1; f < 30; f++)
@@ -599,6 +594,11 @@ namespace MissionPlanner.GCSViews
             if (isFirstRun)
             {
                 InitializeDefaultQuickViewParameters();
+            }
+
+            if (Settings.Instance.ContainsKey("quickViewRows"))
+            {
+                setQuickViewRowsCols(Settings.Instance["quickViewCols"], Settings.Instance["quickViewRows"]);
             }
 
             for (int f = 1; f < 30; f++)
@@ -5662,6 +5662,12 @@ namespace MissionPlanner.GCSViews
                 { 27, "gx" },                    // 陀螺仪X
                 { 28, "rpm2" }                 // rpm2
             };
+
+            var total = defaultParams.Count;
+            var cols = 4;
+            var rows = (int)Math.Ceiling(total / (double)cols);
+            Settings.Instance["quickViewCols"] = cols.ToString();
+            Settings.Instance["quickViewRows"] = rows.ToString();
 
             // 将默认参数保存到Settings中
             foreach (var param in defaultParams)
