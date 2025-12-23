@@ -243,6 +243,22 @@ namespace MissionPlanner.GCSViews
 
             InitializeComponent();
 
+            try
+            {
+                if (contextMenuStripQuickView != null && contextMenuStripQuickView.Items["resetQuickViewDefaultsToolStripMenuItem"] == null)
+                {
+                    var resetItem = new ToolStripMenuItem("Reset QuickView Defaults (5x6)")
+                    {
+                        Name = "resetQuickViewDefaultsToolStripMenuItem"
+                    };
+                    resetItem.Click += resetQuickViewDefaultsToolStripMenuItem_Click;
+                    contextMenuStripQuickView.Items.Insert(0, resetItem);
+                }
+            }
+            catch
+            {
+            }
+
             // initialize responsive layout for remote destination panel
             try
             {
@@ -581,7 +597,7 @@ namespace MissionPlanner.GCSViews
 
             // 检查是否是第一次运行（没有任何quickView设置）
             bool isFirstRun = true;
-            for (int f = 1; f < 30; f++)
+            for (int f = 1; f < 31; f++)
             {
                 if (Settings.Instance["quickView" + f] != null)
                 {
@@ -601,7 +617,7 @@ namespace MissionPlanner.GCSViews
                 setQuickViewRowsCols(Settings.Instance["quickViewCols"], Settings.Instance["quickViewRows"]);
             }
 
-            for (int f = 1; f < 30; f++)
+            for (int f = 1; f < 31; f++)
             {
                 // load settings
                 if (Settings.Instance["quickView" + f] != null)
@@ -613,8 +629,7 @@ namespace MissionPlanner.GCSViews
 
                         // set description and unit
                         string desc = Settings.Instance["quickView" + f];
-                        if (QV.Tag == null)
-                            QV.Tag = desc;
+                        QV.Tag = desc;
                         QV.desc = MainV2.comPort.MAV.cs.GetNameandUnit(desc);
 
                         // set databinding for value
@@ -643,10 +658,30 @@ namespace MissionPlanner.GCSViews
                         if (ctls.Length > 0)
                         {
                             QuickView QV = (QuickView) ctls[0];
+
+                            if (f == 30)
+                            {
+                                QV.Tag = "";
+                                QV.desc = "";
+                                QV.DataBindings.Clear();
+                            }
+                            else
+                            {
                             string desc = QV.desc;
                             if (QV.Tag == null)
                                 QV.Tag = desc;
-                            QV.desc = MainV2.comPort.MAV.cs.GetNameandUnit(QV.Tag.ToString());
+
+                            var tag = QV.Tag?.ToString();
+                            if (string.IsNullOrWhiteSpace(tag))
+                            {
+                                QV.desc = "";
+                                QV.DataBindings.Clear();
+                            }
+                            else
+                            {
+                                QV.desc = MainV2.comPort.MAV.cs.GetNameandUnit(tag);
+                            }
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -5635,37 +5670,37 @@ namespace MissionPlanner.GCSViews
             {
                 { 1, "alt" },                    // Altitude (m)
                 { 2, "groundspeed" },            // 地速(m/s)
-                { 3, "gpshdop" },                // GPS HDOP
-                { 4, "battery_voltage" },        // 电池电压M
-                { 5, "battery_voltage2" },       // 电池2电压M
-                { 6, "nav_pitch" },              // 俯仰目标(deg)
-                { 7, "pitch" },                  // 俯仰(deg)
-                { 8, "ter_curalt" },             // Terain AGL
-                { 9, "ay" },                     // 加速度Y
-                { 10, "verticalspeed" },         // 升降速度(m/s)
-                { 11, "distTraveled" },          // 行驶距离(m)
-                { 12, "DistToHome" },            // Dist to Home (m)
-                { 13, "timeInAir" },             // 留空时间 (sec)
-                { 14, "gpshdop2" },              // Gps HDOP2
-                { 15, "satcount" },              // 卫星数
-                { 16, "watts" },                 // 电池瓦数
-                { 17, "current" },               // 电池电流(Amps)
-                { 18, "satcount2" },             // Sat Count2
-                { 19, "current2" },              // 包池2电流(Amps)
-                { 20, "rangefinder1" },          // rangeFinder
-                { 21, "battery_remaining" },     // 电池剩余(%)
-                { 22, "nav_roll" },              // 横滚目标(deg)
-                { 23, "roll" },                  // 横滚(deg)
+                { 3, "battery_voltage" },        // 电池电压(V)
+                { 4, "nav_pitch" },              // 俯仰目标(deg)
+                { 5, "ter_curalt" },             // Terrain AGL
+                { 6, "altasl" },                 // Altitude (m)
+                { 7, "gpshdop" },                // GPS HDOP
+                { 8, "battery_voltage2" },       // 电池2电压
+                { 9, "pitch" },                  // 俯仰(deg)
+                { 10, "ay" },                    // 加速度Y
+                { 11, "verticalspeed" },         // 升降速度(m/s)
+                { 12, "gpshdop2" },              // Gps HDOP2
+                { 13, "watts" },                 // 电池瓦数
+                { 14, "nav_roll" },              // 横滚目标(deg)
+                { 15, "az" },                    // 加速度Z
+                { 16, "distTraveled" },          // 行驶距离(m)
+                { 17, "satcount" },              // 卫星数
+                { 18, "current" },               // 电池电流(Amps)
+                { 19, "roll" },                  // 横滚(deg)
+                { 20, "gx" },                    // 陀螺仪
+                { 21, "DistToHome" },            // Dist to Home (m)
+                { 22, "satcount2" },             // Sat Count2
+                { 23, "current2" },              // 电池2电流(Amps)
                 { 24, "lat" },                   // 纬度 (dd)
-                { 25, "lng" },                   // 经度(dd)
-                { 26, "az" },                    // 加速度Z
-                { 27, "gx" },                    // 陀螺仪X
-                { 28, "rpm2" }                 // rpm2
+                { 25, "rpm2" },                  // rpm2
+                { 26, "timeInAir" },             // 留空时间 (sec)
+                { 27, "rangefinder1" },          // rangeFinder1
+                { 28, "battery_remaining" },     // 电池剩余(%)
+                { 29, "lng" }                    // 经度(dd)
             };
 
-            var total = defaultParams.Count;
-            var cols = 4;
-            var rows = (int)Math.Ceiling(total / (double)cols);
+            var cols = 5;
+            var rows = 6;
             Settings.Instance["quickViewCols"] = cols.ToString();
             Settings.Instance["quickViewRows"] = rows.ToString();
 
@@ -5803,6 +5838,26 @@ namespace MissionPlanner.GCSViews
             {
                 listQuickView.Clear();
             }
+
+            var quickviews = tableLayoutPanelQuick.Controls.OfType<QuickView>()
+                .Select(qv =>
+                {
+                    int n;
+                    if (qv.Name != null && qv.Name.StartsWith("quickView") && int.TryParse(qv.Name.Substring("quickView".Length), out n))
+                        return new { QV = qv, N = n };
+                    return null;
+                })
+                .Where(x => x != null)
+                .OrderBy(x => x.N)
+                .ToList();
+
+            for (int i = 0; i < Math.Min(total, quickviews.Count); i++)
+            {
+                var col = i % tableLayoutPanelQuick.ColumnCount;
+                var row = i / tableLayoutPanelQuick.ColumnCount;
+                tableLayoutPanelQuick.SetCellPosition(quickviews[i].QV, new TableLayoutPanelCellPosition(col, row));
+            }
+
             for (int i = 0; i < tableLayoutPanelQuick.ColumnCount; i++)
             {
                 if (tableLayoutPanelQuick.ColumnStyles.Count <= i)
@@ -5859,6 +5914,29 @@ namespace MissionPlanner.GCSViews
 
                     Activate();
                 }
+            }
+        }
+
+        private void resetQuickViewDefaultsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                for (int f = 1; f < 31; f++)
+                {
+                    Settings.Instance.Remove("quickView" + f);
+                }
+
+                Settings.Instance.Remove("quickViewRows");
+                Settings.Instance.Remove("quickViewCols");
+
+                InitializeDefaultQuickViewParameters();
+                Settings.Instance.Save();
+
+                Activate();
+            }
+            catch (Exception ex)
+            {
+                log.Debug(ex);
             }
         }
 
