@@ -47,7 +47,7 @@ namespace GDAL
 
             try
             {
-                GdalConfiguration.ConfigureGdal();
+                GdalConfigurationMP.ConfigureGdal();
             }
             catch (Exception ex)
             {
@@ -56,7 +56,7 @@ namespace GDAL
 
             try
             {
-                GdalConfiguration.ConfigureOgr();
+                GdalConfigurationMP.ConfigureOgr();
             }
             catch (Exception ex)
             {

@@ -55,6 +55,9 @@ namespace MissionPlanner.Controls
 
             InitializeComponent();
 
+            CHK_use_home_operator_location.Checked = Settings.Instance.GetBoolean("ODID_UseHomeOperatorLocation", false);
+            nmea_GPS_1.Enabled = !CHK_use_home_operator_location.Checked;
+
             CMB_op_id_type.DisplayMember = "Value";
             CMB_op_id_type.ValueMember = "Key";
             CMB_op_id_type.DataSource = System.Enum.GetValues(typeof(MAVLink.MAV_ODID_OPERATOR_ID_TYPE));
@@ -74,6 +77,13 @@ namespace MissionPlanner.Controls
             myODID_Status._parent_ODID = this;
 
             start();
+        }
+
+        private void CHK_use_home_operator_location_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.Instance["ODID_UseHomeOperatorLocation"] = CHK_use_home_operator_location.Checked.ToString();
+            Settings.Instance.Save();
+            nmea_GPS_1.Enabled = !CHK_use_home_operator_location.Checked;
         }
 
         public void start()
@@ -294,6 +304,48 @@ namespace MissionPlanner.Controls
 
         private void checkGCSGPS()
         {
+            bool useHomeOperatorLocation = Settings.Instance.GetBoolean("ODID_UseHomeOperatorLocation", false);
+
+            if (useHomeOperatorLocation)
+            {
+                try
+                {
+                    if (_host != null)
+                    {
+                        var home = _host.comPort.MAV.cs.HomeLocation;
+
+                        gotolocation.Lat = home.Lat;
+                        gotolocation.Lng = home.Lng;
+                        gotolocation.Alt = home.Alt;
+
+                        _host.comPort.MAV.cs.Base = gotolocation;
+
+                        myDID.operator_latitude = home.Lat;
+                        myDID.operator_longitude = home.Lng;
+                        myDID.operator_altitude_geo = (float)home.Alt;
+                        myDID.operator_location_type = MAVLink.MAV_ODID_OPERATOR_LOCATION_TYPE.TAKEOFF;
+                        myDID.since_last_msg_ms = 0;
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("Error Setting Home Location Data");
+                }
+
+                if (gotolocation.Lat == 0.0 || gotolocation.Lng == 0.0)
+                {
+                    LED_gps_valid.Color = Color.Orange;
+                    _gcs_gps = false;
+                }
+                else
+                {
+                    LED_gps_valid.Color = Color.Green;
+                    _gcs_gps = true;
+                }
+
+                return;
+            }
+
             try 
             {
                 // Check NMEA GPS information

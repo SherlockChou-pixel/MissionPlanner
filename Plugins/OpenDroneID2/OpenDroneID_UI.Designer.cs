@@ -50,6 +50,7 @@ namespace MissionPlanner.Controls
             this.label18 = new System.Windows.Forms.Label();
             this.label18_info = new System.Windows.Forms.Label();
             this.TXT_self_id_TXT = new System.Windows.Forms.TextBox();
+            this.CHK_use_home_operator_location = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.ODOD_tabs = new System.Windows.Forms.TabControl();
             this.tabStatus = new System.Windows.Forms.TabPage();
@@ -260,6 +261,16 @@ namespace MissionPlanner.Controls
             this.TXT_self_id_TXT.Size = new System.Drawing.Size(195, 20);
             this.TXT_self_id_TXT.TabIndex = 46;
 
+            this.CHK_use_home_operator_location.AutoSize = true;
+            this.CHK_use_home_operator_location.Location = new System.Drawing.Point(10, 142);
+            this.CHK_use_home_operator_location.Name = "CHK_use_home_operator_location";
+            this.CHK_use_home_operator_location.Size = new System.Drawing.Size(226, 17);
+            this.CHK_use_home_operator_location.TabIndex = 57;
+            this.CHK_use_home_operator_location.Text = "Use FC Home as operator location";
+            this.CHK_use_home_operator_location.ForeColor = System.Drawing.Color.White;
+            this.CHK_use_home_operator_location.UseVisualStyleBackColor = true;
+            this.CHK_use_home_operator_location.CheckedChanged += new System.EventHandler(this.CHK_use_home_operator_location_CheckedChanged);
+
             // 
             // label18 info
             // 
@@ -448,6 +459,7 @@ namespace MissionPlanner.Controls
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.CHK_use_home_operator_location);
             this.Controls.Add(this.ODOD_tabs);
             this.Controls.Add(this.nmea_GPS_1);
             this.Controls.Add(this.myODID_Status);
@@ -490,6 +502,7 @@ namespace MissionPlanner.Controls
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.Label label18_info;
         private System.Windows.Forms.TextBox TXT_self_id_TXT;
+        private System.Windows.Forms.CheckBox CHK_use_home_operator_location;
         private System.Windows.Forms.GroupBox groupBox2;
         private OpenDroneID_Map_Status myODID_Status;
         private NMEA_GPS_Connection nmea_GPS_1;

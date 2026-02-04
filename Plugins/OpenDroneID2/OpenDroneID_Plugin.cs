@@ -20,7 +20,7 @@ namespace OpenDroneID_Plugin
 
         public override string Version
         {
-            get { return "0.05"; }
+            get { return "0.06-HomeGPS"; }
         }
 
         public override string Author

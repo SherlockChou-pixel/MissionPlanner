@@ -6,7 +6,7 @@ using OSGeo.OGR;
 
 namespace GDAL
 {
-    public static class GdalConfiguration
+    public static class GdalConfigurationMP
     {
         private static bool _gdalConfigured;
         private static bool _ogrConfigured;
