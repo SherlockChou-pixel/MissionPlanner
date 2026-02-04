@@ -116,7 +116,7 @@ namespace MissionPlanner.Controls
             }
             else if (_host.comPort.sysidcurrent != _mySYS && _host.comPort.sysidcurrent > 0)
             {
-                addStatusMessage("Sub. to ODID ARM_STATUS for SysId: " + _host.comPort.sysidcurrent);
+                addStatusMessage("订阅解锁状态消息，系统ID：" + _host.comPort.sysidcurrent);
                 
                 _host.comPort.SubscribeToPacketType(MAVLink.MAVLINK_MSG_ID.OPEN_DRONE_ID_ARM_STATUS, handleODIDArmMSg2, (byte) _host.comPort.sysidcurrent, (byte) MAVLink.MAV_COMPONENT.MAV_COMP_ID_ODID_TXRX_1);
                 _host.comPort.SubscribeToPacketType(MAVLink.MAVLINK_MSG_ID.OPEN_DRONE_ID_ARM_STATUS, handleODIDArmMSg2, (byte)_host.comPort.sysidcurrent, (byte)MAVLink.MAV_COMPONENT.MAV_COMP_ID_ODID_TXRX_2);
@@ -147,10 +147,10 @@ namespace MissionPlanner.Controls
                 {
                     if (odid_arm_status.status != 0) {
                         string s = System.Text.Encoding.ASCII.GetString(odid_arm_status.error);
-                        addStatusMessage("Arm Error: " + s.Substring(0, s.IndexOf((char)0)));
+                        addStatusMessage("解锁错误：" + s.Substring(0, s.IndexOf((char)0)));
                     }
                     else
-                        addStatusMessage("Arm Stats: Ready");
+                        addStatusMessage("解锁状态：就绪");
                     _last_odid_error_agg = _this_agg;
                 }
             }
@@ -158,8 +158,8 @@ namespace MissionPlanner.Controls
             {
                 try
                 {
-                    Console.WriteLine("[DRONE_ID] Detected and Starting on System ID: " + _host.comPort.MAV.sysid);
-                    addStatusMessage("Detected and Starting on System ID: " + _host.comPort.MAV.sysid);
+                    Console.WriteLine("[远程ID] 检测到并启动，系统ID：" + _host.comPort.MAV.sysid);
+                    addStatusMessage("检测到并启动，系统ID：" + _host.comPort.MAV.sysid);
 
                     last_odid_msg.Start();
                     if (dev_mode_rm == false)
@@ -174,12 +174,12 @@ namespace MissionPlanner.Controls
                     }));
                     host_map_status.Visible = true;
 
-                    addStatusMessage("Double Click Primary status indicator to declare Emergency over ODID.");
+                    addStatusMessage("双击主状态指示灯可声明紧急状态。 ");
 
                 }
                 catch
                 {
-                    Console.WriteLine("Error Initializing ODID Message Handler");
+                    Console.WriteLine("初始化远程ID消息处理失败");
                 }
 
             }
@@ -217,18 +217,18 @@ namespace MissionPlanner.Controls
 
 
             if (_odid_arm_msg == false)
-                TXT_RID_Status_Msg.Text = "Timeout.";
+                TXT_RID_Status_Msg.Text = "超时";
             else
-                TXT_RID_Status_Msg.Text = ((odid_arm_status.status == 0) ? "Ready" : System.Text.Encoding.UTF8.GetString(odid_arm_status.error));
+                TXT_RID_Status_Msg.Text = ((odid_arm_status.status == 0) ? "就绪" : System.Text.Encoding.UTF8.GetString(odid_arm_status.error));
                         
         }
 
         public void setEmergencyFromMap()
         {
-            Console.WriteLine("ODID - Pilot Declared an ODID Emergency");
-            TXT_self_id_TXT.Text = "Pilot Emergency Status Declared";
+            Console.WriteLine("飞手声明紧急状态");
+            TXT_self_id_TXT.Text = "飞手已声明紧急状态";
             CMB_self_id_type.SelectedIndex = (int)MAVLink.MAV_ODID_DESC_TYPE.EMERGENCY;
-            addStatusMessage("Pilot Emergency Status");
+            addStatusMessage("飞手紧急状态");
         }
 
         private void checkODID_OK()
@@ -245,17 +245,17 @@ namespace MissionPlanner.Controls
 
             if (_gcs_gps == false)
             {
-                msg = "GCS GPS Invalid";
+                msg = "地面站定位无效";
 
             }
             else if (_odid_arm_msg == false)
             {
-                msg = "Remote ID Msg Timeout";
+                msg = "远程ID消息超时";
 
             }
             else if (_odid_arm_status == false)
             {
-                msg = "Remote ID ARM Error";
+                msg = "远程ID解锁错误";
 
             }            
             else
@@ -329,7 +329,7 @@ namespace MissionPlanner.Controls
                 }
                 catch
                 {
-                    Console.WriteLine("Error Setting Home Location Data");
+                    Console.WriteLine("设置起飞点位置数据失败");
                 }
 
                 if (gotolocation.Lat == 0.0 || gotolocation.Lng == 0.0)
@@ -366,7 +366,7 @@ namespace MissionPlanner.Controls
 		myDID.since_last_msg_ms = nmea_GPS_1.last_gps_msg.ElapsedMilliseconds;
 	    } catch
             {
-                Console.WriteLine("Error Setting NMEA GPS Data");
+                Console.WriteLine("设置定位数据失败");
             }
 
             // Check GCS GPS
@@ -396,12 +396,12 @@ namespace MissionPlanner.Controls
         {
             // Note: this function is for development only and should be removed for production enviroments. 
 
-            if (CustomMessageBox.Show("Are you sure you want to disable outgoing Remote ID?", "RID Developer Mode?", CustomMessageBox.MessageBoxButtons.YesNo) == CustomMessageBox.DialogResult.No)
+            if (CustomMessageBox.Show("确定要禁用远程ID外发消息吗?", "开发者模式?", CustomMessageBox.MessageBoxButtons.YesNo) == CustomMessageBox.DialogResult.No)
             {
                 return;
             }
-            Console.WriteLine("----------------- REMOTE ID Outgoing Messages have been disabled ------------------------------------");
-            addStatusMessage("REMOTE ID outgoing messages have been DIABLED");
+            Console.WriteLine("----------------- 已禁用远程ID外发消息 ------------------------------------");
+            addStatusMessage("已禁用远程ID外发消息");
             dev_mode_rm = true;
             myDID.Stop();
             _thread_odid.Abort();

@@ -15,12 +15,12 @@ namespace OpenDroneID_Plugin
 
         public override string Name
         {
-            get { return "Open Drone ID"; }
+            get { return "无人机远程ID"; }
         }
 
         public override string Version
         {
-            get { return "0.06-HomeGPS"; }
+            get { return "0.06-起飞点"; }
         }
 
         public override string Author
@@ -46,7 +46,7 @@ namespace OpenDroneID_Plugin
 
             tabctrl = Host.MainForm.FlightData.tabControlactions;
             // set the display name
-            tab.Text = "Drone ID";
+            tab.Text = "远程ID";
             // set the internal id
             tab.Name = "tabDroneID";
             // add the usercontrol to the tabpage
@@ -58,7 +58,7 @@ namespace OpenDroneID_Plugin
 
             ThemeManager.ApplyThemeTo(tab);
 
-            myODID_UI.setVer("Ver: " + Version);
+            myODID_UI.setVer("版本: " + Version);
 
             return true;
         }
@@ -73,7 +73,7 @@ namespace OpenDroneID_Plugin
             // setup default if doesnt exist
             if (tabs == null)
             {
-                CustomMessageBox.Show("Restart Mission Planner to enable Drone ID Tab. Disable Plugin if Not Required CTRL-P");
+                CustomMessageBox.Show("请重启 Mission Planner 以启用远程ID页面。如不需要可在 CTRL-P 中禁用插件。");
                 Host.MainForm.FlightData.saveTabControlActions();
                 tabs = Settings.Instance["tabcontrolactions"];
                 Settings.Instance.Save();

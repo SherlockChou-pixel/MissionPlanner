@@ -47,7 +47,7 @@
             this.LBL_port_txt.Name = "LBL_port_txt";
             this.LBL_port_txt.Size = new System.Drawing.Size(103, 13);
             this.LBL_port_txt.TabIndex = 1;
-            this.LBL_port_txt.Text = "NMEA String Viewer";
+            this.LBL_port_txt.Text = "定位字符串查看器";
             // 
             // NMEA_Viewer
             // 
@@ -57,7 +57,7 @@
             this.Controls.Add(this.LBL_port_txt);
             this.Controls.Add(this.TXT_Data);
             this.Name = "NMEA_Viewer";
-            this.Text = "NMEA_Viewer";
+            this.Text = "定位字符串查看器";
             this.ResumeLayout(false);
             this.PerformLayout();
 

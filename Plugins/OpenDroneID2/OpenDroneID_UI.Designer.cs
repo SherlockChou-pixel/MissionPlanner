@@ -90,7 +90,7 @@ namespace MissionPlanner.Controls
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(62, 13);
             this.label1.TabIndex = 7;
-            this.label1.Text = "Operator ID";
+            this.label1.Text = "飞手ID";
             // 
             // label2
             // 
@@ -100,7 +100,7 @@ namespace MissionPlanner.Controls
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(43, 13);
             this.label2.TabIndex = 9;
-            this.label2.Text = "UAS ID";
+            this.label2.Text = "无人机ID";
             // 
             // TXT_UAS_ID
             // 
@@ -120,7 +120,7 @@ namespace MissionPlanner.Controls
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(70, 13);
             this.label3.TabIndex = 10;
-            this.label3.Text = "UAS ID Type";
+            this.label3.Text = "无人机ID类型";
             // 
             // label4
             // 
@@ -130,7 +130,7 @@ namespace MissionPlanner.Controls
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(49, 13);
             this.label4.TabIndex = 11;
-            this.label4.Text = "UA Type";
+            this.label4.Text = "无人机类型";
 
             // 
             // label4 info
@@ -141,7 +141,7 @@ namespace MissionPlanner.Controls
             this.label4_info.Name = "label4_info";
             this.label4_info.Size = new System.Drawing.Size(49, 13);
             this.label4_info.TabIndex = 12;
-            this.label4_info.Text = "Optional settings. Typically these are set in the ArduRemoteID\r\ndevice instead.";
+            this.label4_info.Text = "可选设置：通常由 ArduRemoteID 设备端配置。";
 
             // 
             // label12
@@ -152,7 +152,7 @@ namespace MissionPlanner.Controls
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(64, 13);
             this.label12.TabIndex = 31;
-            this.label12.Text = "ARM Status";
+            this.label12.Text = "解锁状态";
             // 
             // LED_ArmedError
             // 
@@ -162,7 +162,7 @@ namespace MissionPlanner.Controls
             this.LED_ArmedError.On = true;
             this.LED_ArmedError.Size = new System.Drawing.Size(16, 16);
             this.LED_ArmedError.TabIndex = 32;
-            this.LED_ArmedError.Text = "ledBulb1";
+            this.LED_ArmedError.Text = "";
             // 
             // label13
             // 
@@ -172,7 +172,7 @@ namespace MissionPlanner.Controls
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(63, 13);
             this.label13.TabIndex = 33;
-            this.label13.Text = "RID Comms";
+            this.label13.Text = "通讯";
             // 
             // LED_RemoteID_Messages
             // 
@@ -182,7 +182,7 @@ namespace MissionPlanner.Controls
             this.LED_RemoteID_Messages.On = true;
             this.LED_RemoteID_Messages.Size = new System.Drawing.Size(16, 16);
             this.LED_RemoteID_Messages.TabIndex = 34;
-            this.LED_RemoteID_Messages.Text = "ledBulb1";
+            this.LED_RemoteID_Messages.Text = "";
             // 
             // LED_gps_valid
             // 
@@ -192,7 +192,7 @@ namespace MissionPlanner.Controls
             this.LED_gps_valid.On = true;
             this.LED_gps_valid.Size = new System.Drawing.Size(16, 16);
             this.LED_gps_valid.TabIndex = 36;
-            this.LED_gps_valid.Text = "LED_gps_sbas";
+            this.LED_gps_valid.Text = "";
             // 
             // label14
             // 
@@ -202,7 +202,7 @@ namespace MissionPlanner.Controls
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(54, 13);
             this.label14.TabIndex = 35;
-            this.label14.Text = "GCS GPS";
+            this.label14.Text = "地面站定位";
 
             // 
             // CMB_uas_id_type
@@ -231,7 +231,7 @@ namespace MissionPlanner.Controls
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(66, 13);
             this.label17.TabIndex = 44;
-            this.label17.Text = "Self ID Type";
+            this.label17.Text = "自述类型";
             // 
             // CMB_self_id_type
             // 
@@ -250,7 +250,7 @@ namespace MissionPlanner.Controls
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(67, 13);
             this.label18.TabIndex = 47;
-            this.label18.Text = "Self ID Desc";
+            this.label18.Text = "自述内容";
             // 
             // TXT_self_id_TXT
             // 
@@ -262,11 +262,11 @@ namespace MissionPlanner.Controls
             this.TXT_self_id_TXT.TabIndex = 46;
 
             this.CHK_use_home_operator_location.AutoSize = true;
-            this.CHK_use_home_operator_location.Location = new System.Drawing.Point(10, 142);
+            this.CHK_use_home_operator_location.Location = new System.Drawing.Point(6, 138);
             this.CHK_use_home_operator_location.Name = "CHK_use_home_operator_location";
-            this.CHK_use_home_operator_location.Size = new System.Drawing.Size(226, 17);
+            this.CHK_use_home_operator_location.Size = new System.Drawing.Size(155, 17);
             this.CHK_use_home_operator_location.TabIndex = 57;
-            this.CHK_use_home_operator_location.Text = "Use FC Home as operator location";
+            this.CHK_use_home_operator_location.Text = "使用起飞点作为飞手位置";
             this.CHK_use_home_operator_location.ForeColor = System.Drawing.Color.White;
             this.CHK_use_home_operator_location.UseVisualStyleBackColor = true;
             this.CHK_use_home_operator_location.CheckedChanged += new System.EventHandler(this.CHK_use_home_operator_location_CheckedChanged);
@@ -276,11 +276,11 @@ namespace MissionPlanner.Controls
             // 
             this.label18_info.AutoSize = true;
             this.label18_info.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label18_info.Location = new System.Drawing.Point(6, 150);
+            this.label18_info.Location = new System.Drawing.Point(6, 156);
             this.label18_info.Name = "label18_info";
             this.label18_info.Size = new System.Drawing.Size(273, 26);
             this.label18_info.TabIndex = 47;
-            this.label18_info.Text = "These fields are optional in the USA.\r\nThey can also be set in the ArduRemoteID device.";
+            this.label18_info.Text = "在部分地区这些字段为可选。\r\n也可以在 ArduRemoteID 设备端设置。";
 
             // 
             // groupBox2
@@ -298,7 +298,7 @@ namespace MissionPlanner.Controls
             this.groupBox2.Size = new System.Drawing.Size(197, 69);
             this.groupBox2.TabIndex = 53;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Remote ID Status";
+            this.groupBox2.Text = "远程ID状态";
             // 
             // ODOD_tabs
             // 
@@ -323,7 +323,7 @@ namespace MissionPlanner.Controls
             this.tabStatus.Name = "tabStatus";
             this.tabStatus.Size = new System.Drawing.Size(354, 183);
             this.tabStatus.TabIndex = 2;
-            this.tabStatus.Text = "Status";
+            this.tabStatus.Text = "状态";
             this.tabStatus.UseVisualStyleBackColor = true;
             // 
             // LBL_version
@@ -346,8 +346,7 @@ namespace MissionPlanner.Controls
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(273, 26);
             this.label8.TabIndex = 12;
-            this.label8.Text = "This version of Open Drone ID Plugin is for Testing Only.\r\nDouble Click GPS Data " +
-    "for RAW NMEA Viewer. ";
+            this.label8.Text = "当前版本仅用于测试。\r\n双击定位数据可打开原始数据查看器。";
             // 
             // TXT_RID_Status_Msg
             // 
@@ -365,7 +364,7 @@ namespace MissionPlanner.Controls
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(92, 13);
             this.label5.TabIndex = 11;
-            this.label5.Text = "RID Armed Status";
+            this.label5.Text = "解锁状态";
             // 
             // TXT_ODID_Status
             // 
@@ -389,7 +388,7 @@ namespace MissionPlanner.Controls
             this.tab_uid.Padding = new System.Windows.Forms.Padding(3);
             this.tab_uid.Size = new System.Drawing.Size(354, 183);
             this.tab_uid.TabIndex = 0;
-            this.tab_uid.Text = "UAS ID";
+            this.tab_uid.Text = "无人机ID";
             this.tab_uid.UseVisualStyleBackColor = true;
             // 
             // tab_ops
@@ -409,7 +408,7 @@ namespace MissionPlanner.Controls
             this.tab_ops.Padding = new System.Windows.Forms.Padding(3);
             this.tab_ops.Size = new System.Drawing.Size(354, 183);
             this.tab_ops.TabIndex = 1;
-            this.tab_ops.Text = "Operations";
+            this.tab_ops.Text = "操作";
             this.tab_ops.UseVisualStyleBackColor = true;
             // 
             // label7
@@ -420,7 +419,7 @@ namespace MissionPlanner.Controls
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(45, 13);
             this.label7.TabIndex = 50;
-            this.label7.Text = "Self ID: ";
+            this.label7.Text = "自述：";
             // 
             // label6
             // 
@@ -430,7 +429,7 @@ namespace MissionPlanner.Controls
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(74, 13);
             this.label6.TabIndex = 48;
-            this.label6.Text = "Oper. ID Type";
+            this.label6.Text = "飞手ID类型";
             // 
             // CMB_op_id_type
             // 

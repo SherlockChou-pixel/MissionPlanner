@@ -19,6 +19,32 @@ namespace MissionPlanner
 
     public partial class NMEA_GPS_Connection : UserControl
     {
+        private const string PORT_TCP_HOST_14551_CN = "TCP主机 - 14551";
+        private const string PORT_TCP_CLIENT_CN = "TCP客户端";
+        private const string PORT_UDP_HOST_14551_CN = "UDP主机 - 14551";
+        private const string PORT_UDP_CLIENT_CN = "UDP客户端";
+
+        private string NormalizePortName(string port)
+        {
+            if (string.IsNullOrEmpty(port))
+                return port;
+
+            switch (port)
+            {
+                case "TCP Host - 14551":
+                case "TCP Host":
+                    return PORT_TCP_HOST_14551_CN;
+                case "TCP Client":
+                    return PORT_TCP_CLIENT_CN;
+                case "UDP Host - 14551":
+                    return PORT_UDP_HOST_14551_CN;
+                case "UDP Client":
+                    return PORT_UDP_CLIENT_CN;
+                default:
+                    return port;
+            }
+        }
+
         public class PointNMEA
         {
             public double Lat { get; set; }
@@ -62,7 +88,7 @@ namespace MissionPlanner
             }
             catch
             {
-                Console.WriteLine("Couldn't Init Open NMEA Form.");
+                Console.WriteLine("初始化 NMEA 界面失败");
             }
             //timer2.Start();
 
@@ -102,10 +128,10 @@ namespace MissionPlanner
         {
             CMB_serialport.Items.Clear();
             CMB_serialport.Items.AddRange(SerialPort.GetPortNames());
-            CMB_serialport.Items.Add("TCP Host - 14551");
-            CMB_serialport.Items.Add("TCP Client");
-            CMB_serialport.Items.Add("UDP Host - 14551");
-            CMB_serialport.Items.Add("UDP Client");
+            CMB_serialport.Items.Add(PORT_TCP_HOST_14551_CN);
+            CMB_serialport.Items.Add(PORT_TCP_CLIENT_CN);
+            CMB_serialport.Items.Add(PORT_UDP_HOST_14551_CN);
+            CMB_serialport.Items.Add(PORT_UDP_CLIENT_CN);
             portsAreLoaded = true;
 
         }
@@ -127,9 +153,10 @@ namespace MissionPlanner
             try
             {
                 // Preload Serial port from settings
-                if (!String.IsNullOrEmpty(Settings.Instance["moving_gps_com"]) && CMB_serialport.Items.Contains(Settings.Instance["moving_gps_com"]))
+                var movingGpsCom = NormalizePortName(Settings.Instance["moving_gps_com"]);
+                if (!String.IsNullOrEmpty(movingGpsCom) && CMB_serialport.Items.Contains(movingGpsCom))
                 {
-                    CMB_serialport.SelectedIndex = CMB_serialport.Items.IndexOf(Settings.Instance["moving_gps_com"]);
+                    CMB_serialport.SelectedIndex = CMB_serialport.Items.IndexOf(movingGpsCom);
                     //Console.Write("COM: " + CMB_serialport.Text);
                 }
                 else
@@ -155,7 +182,7 @@ namespace MissionPlanner
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Auto Connect Setup Failed.");
+                Console.WriteLine("自动连接设置失败");
                 Console.WriteLine(ex.Message);
             }
 
@@ -174,37 +201,41 @@ namespace MissionPlanner
             if (comPort != null && comPort.IsOpen)
             {
                 comPort.Close();
-                BUT_connect.Text = Strings.Connect;
+                BUT_connect.Text = "连接基站定位";
                 threadrun = false;
-                LBL_gpsStatus.Text = "Disconnected";
+                LBL_gpsStatus.Text = "已断开";
                 _thisData = new PointNMEA();
                 _thread.Abort();
             }
             else
             {
-                LBL_gpsStatus.Text = "Connecting to " + CMB_serialport.Text;
+                LBL_gpsStatus.Text = "正在连接 " + CMB_serialport.Text;
                 try
                 {
                     switch (CMB_serialport.Text)
                     {
                         case "TCP Host - 14551":
                         case "TCP Host":
+                        case PORT_TCP_HOST_14551_CN:
                             comPort = new TcpSerial();
                             CMB_baudrate.SelectedIndex = 0;
                             listener = new TcpListener(System.Net.IPAddress.Any, 14551);
                             listener.Start(0);
                             listener.BeginAcceptTcpClient(new AsyncCallback(DoAcceptTcpClientCallback), listener);
-                            BUT_connect.Text = Strings.Stop;
+                            BUT_connect.Text = "停止";
                             break;
                         case "TCP Client":
+                        case PORT_TCP_CLIENT_CN:
                             comPort = new TcpSerial() { retrys = 999999, autoReconnect = true, ConfigRef = "OpenDroneIDTCP" };
                             CMB_baudrate.SelectedIndex = 0;
                             break;
                         case "UDP Host - 14551":
+                        case PORT_UDP_HOST_14551_CN:
                             comPort = new UdpSerial();
                             CMB_baudrate.SelectedIndex = 0;
                             break;
                         case "UDP Client":
+                        case PORT_UDP_CLIENT_CN:
                             comPort = new UdpSerialConnect();
                             CMB_baudrate.SelectedIndex = 0;
                             break;
@@ -216,7 +247,7 @@ namespace MissionPlanner
                 }
                 catch
                 {
-                    CustomMessageBox.Show(Strings.InvalidPortName);
+                    CustomMessageBox.Show("端口名称无效");
                     return;
                 }
                 try
@@ -225,7 +256,7 @@ namespace MissionPlanner
                 }
                 catch
                 {
-                    CustomMessageBox.Show(Strings.InvalidBaudRate, Strings.ERROR);
+                    CustomMessageBox.Show("波特率无效", "错误");
                     return;
                 }
                 try
@@ -236,14 +267,14 @@ namespace MissionPlanner
                 catch (Exception ex)
                 {
                     //CustomMessageBox.Show(Strings.ErrorConnecting + "\n" + ex.ToString(), Strings.ERROR);
-                    LBL_gpsStatus.Text = "Error Connecting to " + CMB_serialport.Text + ". Try again.";
+                    LBL_gpsStatus.Text = "连接失败：" + CMB_serialport.Text + "，请重试。";
                     return;
                 }
 
                 if (comPort != null && comPort.IsOpen)
                 {
-                    Console.WriteLine("Moving Base COM Port Opened at port " + comPort.PortName);
-                    LBL_gpsStatus.Text = "Connected to " + comPort.PortName + ". Waiting for fix";
+                    Console.WriteLine("移动基站端口已打开：" + comPort.PortName);
+                    LBL_gpsStatus.Text = "已连接 " + comPort.PortName + "，等待定位...";
 
                     start();
 
@@ -254,7 +285,7 @@ namespace MissionPlanner
                 Settings.Instance["moving_gps_auto"] = CB_auto_connect.Checked.ToString();
 
                 last_gps_msg.Start();
-                BUT_connect.Text = Strings.Stop;
+                BUT_connect.Text = "停止";
             }
         }
 
@@ -297,13 +328,13 @@ namespace MissionPlanner
 
                             if (items[items.Length - 1] != GetChecksum(line.Trim()))
                             {
-                                Console.WriteLine("Bad Nmea line " + items[15] + " vs " + GetChecksum(line.Trim()));
+                                Console.WriteLine("校验失败 " + items[15] + " vs " + GetChecksum(line.Trim()));
                                 continue;
                             }
 
                             if (items[6] == "0")
                             {
-                                LBL_gpsStatus.Text = "Connected, No Fix";
+                                LBL_gpsStatus.Text = "已连接，无定位";
                                 continue;
                             }
 
@@ -352,12 +383,12 @@ namespace MissionPlanner
                 }
                 else
                 {
-                    BUT_connect.Text = Strings.Connect;
+                    BUT_connect.Text = "连接基站定位";
                 }
             }
             catch
             {
-                Console.WriteLine("Error Processing NMEA Data for Moving Base.");
+                Console.WriteLine("处理移动基站 NMEA 数据失败");
             }
         }
 

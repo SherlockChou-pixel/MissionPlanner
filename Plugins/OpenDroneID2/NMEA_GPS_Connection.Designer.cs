@@ -44,7 +44,7 @@
             this.CB_auto_connect.Name = "CB_auto_connect";
             this.CB_auto_connect.Size = new System.Drawing.Size(48, 17);
             this.CB_auto_connect.TabIndex = 46;
-            this.CB_auto_connect.Text = "Auto";
+            this.CB_auto_connect.Text = "自动";
             this.CB_auto_connect.UseVisualStyleBackColor = true;
             this.CB_auto_connect.CheckedChanged += new System.EventHandler(this.CB_auto_connect_CheckedChanged);
             // 
@@ -82,7 +82,7 @@
             this.BUT_connect.Name = "BUT_connect";
             this.BUT_connect.Size = new System.Drawing.Size(115, 20);
             this.BUT_connect.TabIndex = 43;
-            this.BUT_connect.Text = "Connect Base GPS";
+            this.BUT_connect.Text = "连接基站定位";
             this.BUT_connect.UseVisualStyleBackColor = true;
             this.BUT_connect.Click += new System.EventHandler(this.BUT_connect_Click);
             // 
@@ -94,7 +94,7 @@
             this.LBL_gpsStatus.Name = "LBL_gpsStatus";
             this.LBL_gpsStatus.Size = new System.Drawing.Size(368, 13);
             this.LBL_gpsStatus.TabIndex = 42;
-            this.LBL_gpsStatus.Text = "Not Yet Started                                                                  " +
+            this.LBL_gpsStatus.Text = "尚未启动                                                                  " +
     "                              ";
             this.LBL_gpsStatus.DoubleClick += new System.EventHandler(this.LBL_gpsStatus_DoubleClick);
             // 
@@ -110,7 +110,7 @@
             this.groupBox1.Size = new System.Drawing.Size(360, 80);
             this.groupBox1.TabIndex = 47;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "GCS GPS ";
+            this.groupBox1.Text = "地面站定位";
             // 
             // NMEA_GPS_Connection
             // 
