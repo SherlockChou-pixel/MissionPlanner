@@ -96,19 +96,32 @@ namespace MissionPlanner.ArduPilot
         }
 
         private static readonly object getListlock = new object();
+        private static bool manifestloaded = false;
 
         public static void GetList(string url = "https://firmware.ardupilot.org/manifest.json.gz", bool force = false)
         {
             lock (getListlock)
             {
-                if (force == false && Manifest != null)
+                if (force == false && manifestloaded)
                     return;
+
+                if (Manifest == null)
+                    Manifest = new ManifestRoot { Firmware = Array.Empty<FirmwareInfo>(), FormatVersion = new Version(0, 0) };
 
                 try
                 {
                     log.Info(url);
 
+                    try
+                    {
+                        ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+                    }
+                    catch
+                    {
+                    }
+
                     var client = new HttpClient();
+                    client.Timeout = TimeSpan.FromSeconds(30);
 
                     if (!String.IsNullOrEmpty(Settings.Instance.UserAgent))
                         client.DefaultRequestHeaders.Add("User-Agent", Settings.Instance.UserAgent);
@@ -121,7 +134,13 @@ namespace MissionPlanner.ArduPilot
                     msdest.Position = 0;
                     var manifest = new StreamReader(msdest).ReadToEnd();
 
-                    Manifest = JsonConvert.DeserializeObject<ManifestRoot>(manifest);
+                    var parsed = JsonConvert.DeserializeObject<ManifestRoot>(manifest);
+
+                    if (parsed?.Firmware != null)
+                    {
+                        Manifest = parsed;
+                        manifestloaded = true;
+                    }
 
                     log.Info(Manifest.Firmware?.Length);
 
@@ -142,7 +161,22 @@ namespace MissionPlanner.ArduPilot
                 {
                     log.Info(url);
 
+                    if (Manifest == null)
+                        Manifest = new ManifestRoot { Firmware = Array.Empty<FirmwareInfo>(), FormatVersion = new Version(0, 0) };
+
+                    if (Manifest.Firmware == null)
+                        Manifest.Firmware = Array.Empty<FirmwareInfo>();
+
+                    try
+                    {
+                        ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+                    }
+                    catch
+                    {
+                    }
+
                     var client = new HttpClient();
+                    client.Timeout = TimeSpan.FromSeconds(30);
 
                     if (!String.IsNullOrEmpty(Settings.Instance.UserAgent))
                         client.DefaultRequestHeaders.Add("User-Agent", Settings.Instance.UserAgent);
@@ -165,9 +199,15 @@ namespace MissionPlanner.ArduPilot
 
                     var Manifest2 = JsonConvert.DeserializeObject<ManifestRoot>(manifest);
 
+                    if (Manifest2?.Firmware == null)
+                        return;
+
                     var list = Manifest.Firmware.ToList();
                     list.AddRange(Manifest2.Firmware);
                     Manifest.Firmware = list.ToArray();
+
+                    if (Manifest.Firmware.Length > 0)
+                        manifestloaded = true;
 
                     log.Info(Manifest.Firmware?.Length);
                 }
@@ -178,7 +218,25 @@ namespace MissionPlanner.ArduPilot
             }
         }
 
-        public static ManifestRoot Manifest { get; set; }
+        private static ManifestRoot _manifest;
+
+        public static ManifestRoot Manifest
+        {
+            get
+            {
+                if (_manifest == null)
+                    _manifest = new ManifestRoot { Firmware = Array.Empty<FirmwareInfo>(), FormatVersion = new Version(0, 0) };
+
+                if (_manifest.Firmware == null)
+                    _manifest.Firmware = Array.Empty<FirmwareInfo>();
+
+                return _manifest;
+            }
+            set
+            {
+                _manifest = value;
+            }
+        }
 
         public static long[] GetBoardID(DeviceInfo device, bool boardidcheck = true)
         {
