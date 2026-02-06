@@ -116,7 +116,10 @@ namespace MissionPlanner.Plugin
             // file exists in the install directory, so skip trying to load it as a plugin
             if (File.Exists(file) && File.Exists(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) +
                                                  Path.DirectorySeparatorChar + Path.GetFileName(file)))
+            {
+                log.Info("Plugin Skip (duplicate in running dir) " + file);
                 return;
+            }
 
             AppDomain currentDomain = AppDomain.CurrentDomain;
             currentDomain.AssemblyResolve += new ResolveEventHandler(LoadFromSameFolder);
@@ -130,9 +133,9 @@ namespace MissionPlanner.Plugin
                 asm = Assembly.LoadFile(file);
                 log.Info("Plugin Load " + file);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // unable to load
+                log.Error("Failed to load plugin file " + file, ex);
                 return;
             }
 

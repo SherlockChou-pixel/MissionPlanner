@@ -24,6 +24,14 @@ jobs:
         shell: pwsh
         run: |
           cd bin\Release\net461
+          if (Test-Path .\opendroneid.dll -PathType Leaf) {
+            Write-Host 'Remove root duplicate: opendroneid.dll'
+            Remove-Item .\opendroneid.dll
+          }
+          if (Test-Path .\opendroneid.pdb -PathType Leaf) {
+            Write-Host 'Remove root duplicate: opendroneid.pdb'
+            Remove-Item .\opendroneid.pdb
+          }
           gci plugins | ForEach-Object {
             if (Test-Path $_.Name -PathType Leaf) {
               if ($_.Name -like '*opendroneid*') {
