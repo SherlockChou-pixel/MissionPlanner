@@ -24,7 +24,18 @@ jobs:
         shell: pwsh
         run: |
           cd bin\Release\net461
-          gci plugins | ForEach-Object {                 if (Test-Path $_.Name -PathType Leaf)                {                    Write-Host "Remove" $_.FullName   ;                 Remove-Item $_.FullName                            } else {                    Write-Host $_.Name                }            }
+          gci plugins | ForEach-Object {
+            if (Test-Path $_.Name -PathType Leaf) {
+              if ($_.Name -like '*opendroneid*') {
+                Write-Host 'Keep plugin:' $_.FullName
+              } else {
+                Write-Host 'Remove duplicate:' $_.FullName
+                Remove-Item $_.FullName
+              }
+            } else {
+              Write-Host $_.Name
+            }
+          }
 
           copy version.txt ..\..\..\
           7z a -tzip ..\..\..\MissionPlannerBeta.zip *

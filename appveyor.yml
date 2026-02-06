@@ -16,7 +16,7 @@ build_script:
 
     cd bin\Release\net461
     
-    powershell -command "ls plugins -recurse | ForEach-Object { if (Test-Path ($_.fullname -replace '\\plugins\\','\') -PathType Leaf) { $_.fullname }} | ForEach-Object { del $_ }"
+    powershell -command "ls plugins -recurse | ForEach-Object { if (Test-Path ($_.fullname -replace '\\plugins\\','\') -PathType Leaf) { $_.fullname }} | ForEach-Object { if ($_.fullname -like '*opendroneid*') { Write-Host 'Keep plugin:' $_.fullname } else { del $_ } }"
 
     copy version.txt c:\mp\
     
