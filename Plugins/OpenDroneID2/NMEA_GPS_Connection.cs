@@ -54,6 +54,7 @@ namespace MissionPlanner
             public float hdop { get; set; }
             public int sats { get; set; }
             public int fix_type { get; set; }
+            public bool IsManualOverride { get; set; }
         }
 
         static TcpListener listener;
@@ -62,6 +63,9 @@ namespace MissionPlanner
         //static internal PointLatLngAlt gotolocation = new PointLatLngAlt(0, 0, 0, "Goto");
 
         private PointNMEA _thisData { get; set; } = new PointNMEA();
+
+        private bool _manualOverrideEnabled;
+        private PointNMEA _manualOverrideData { get; set; } = new PointNMEA();
 
         public Stopwatch last_gps_msg = new Stopwatch();
         private bool portsAreLoaded = false;
@@ -81,6 +85,31 @@ namespace MissionPlanner
         {
             InitializeComponent();
             Instance = this;
+
+            try
+            {
+                _manualOverrideEnabled = Settings.Instance.GetBoolean("ODID_ManualOperatorLocationEnabled", false);
+                _manualOverrideData.Lat = Settings.Instance.GetDouble("ODID_ManualOperatorLat", 0);
+                _manualOverrideData.Lng = Settings.Instance.GetDouble("ODID_ManualOperatorLng", 0);
+                _manualOverrideData.Alt = Settings.Instance.GetDouble("ODID_ManualOperatorAlt", 0);
+                _manualOverrideData.Alt_WGS84 = _manualOverrideData.Alt;
+
+                UpdateStatusLabel();
+            }
+            catch
+            {
+                // ignore settings load failures
+            }
+
+            try
+            {
+                CHK_use_home_operator_location.Checked = Settings.Instance.GetBoolean("ODID_UseHomeOperatorLocation", false);
+                UpdateControlsState();
+            }
+            catch
+            {
+                // ignore
+            }
 
             try
             {
@@ -120,7 +149,67 @@ namespace MissionPlanner
 
         public PointNMEA getPointNMEA()
         {
+            if (_manualOverrideEnabled)
+                return _manualOverrideData;
+
             return _thisData;
+        }
+
+        private void UpdateStatusLabel()
+        {
+            if (LBL_gpsStatus == null)
+                return;
+
+            if (_manualOverrideEnabled)
+            {
+                LBL_gpsStatus.Text = string.Format(CultureInfo.InvariantCulture,
+                    "手动覆盖: {0:0.00000} {1:0.00000} {2:0.002} m", _manualOverrideData.Lat, _manualOverrideData.Lng, _manualOverrideData.Alt);
+                return;
+            }
+
+            if (comPort == null || !comPort.IsOpen)
+            {
+                LBL_gpsStatus.Text = "尚未启动\r\n右键可手动输入经纬度/高度";
+            }
+        }
+
+        private void LBL_gpsStatus_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right)
+                return;
+
+            try
+            {
+                double lat = _manualOverrideData.Lat;
+                double lng = _manualOverrideData.Lng;
+                double alt = _manualOverrideData.Alt;
+
+                if (MissionPlanner.Controls.InputBox.Show("地面站定位", "请输入纬度(°)", ref lat) != DialogResult.OK)
+                    return;
+                if (MissionPlanner.Controls.InputBox.Show("地面站定位", "请输入经度(°)", ref lng) != DialogResult.OK)
+                    return;
+                if (MissionPlanner.Controls.InputBox.Show("地面站定位", "请输入高度(m)", ref alt) != DialogResult.OK)
+                    return;
+
+                _manualOverrideData.Lat = lat;
+                _manualOverrideData.Lng = lng;
+                _manualOverrideData.Alt = alt;
+                _manualOverrideData.Alt_WGS84 = alt;
+                _manualOverrideEnabled = true;
+
+                Settings.Instance["ODID_ManualOperatorLocationEnabled"] = "True";
+                Settings.Instance["ODID_ManualOperatorLat"] = lat.ToString(CultureInfo.InvariantCulture);
+                Settings.Instance["ODID_ManualOperatorLng"] = lng.ToString(CultureInfo.InvariantCulture);
+                Settings.Instance["ODID_ManualOperatorAlt"] = alt.ToString(CultureInfo.InvariantCulture);
+                Settings.Instance.Save();
+
+                last_gps_msg.Restart();
+                UpdateStatusLabel();
+            }
+            catch
+            {
+                // ignore
+            }
         }
 
 
@@ -206,6 +295,7 @@ namespace MissionPlanner
                 LBL_gpsStatus.Text = "已断开";
                 _thisData = new PointNMEA();
                 _thread.Abort();
+                UpdateStatusLabel();
             }
             else
             {
@@ -412,6 +502,11 @@ namespace MissionPlanner
                         (MethodInvoker)
                             delegate
                             {
+                                if (_manualOverrideEnabled)
+                                {
+                                    UpdateStatusLabel();
+                                    return;
+                                }
                                 Instance.LBL_gpsStatus.Text = String.Format("{0:0.00000}", _thisData.Lat) + " " + String.Format("{0:0.00000}", _thisData.Lng) + " " +
                                                              String.Format("{0:0.002} m", _thisData.Alt) + Environment.NewLine + "WGS84: " + String.Format("{0:0.002} m", _thisData.Alt_WGS84) + 
                                                              " Sats: " + _thisData.sats + " HDOP: " + String.Format("{0:0.02}", _thisData.hdop) + " DGPS: " + ((_thisData.fix_type > 1) ? "Yes":"No");
@@ -427,6 +522,100 @@ namespace MissionPlanner
             _nmeaViewer = new NMEA_Viewer(); 
             _nmeaViewer.Show();
             _nmeaViewer.setLabel("Showing Feed from: " + comPort.PortName);
+        }
+
+        private void CHK_use_home_operator_location_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.Instance["ODID_UseHomeOperatorLocation"] = CHK_use_home_operator_location.Checked.ToString();
+            Settings.Instance.Save();
+            UpdateControlsState();
+        }
+
+        private void UpdateControlsState()
+        {
+            bool useHome = CHK_use_home_operator_location.Checked;
+            CMB_serialport.Enabled = !useHome;
+            CMB_baudrate.Enabled = !useHome;
+            BUT_connect.Enabled = !useHome;
+            CB_auto_connect.Enabled = !useHome;
+        }
+
+        private void menuItem_ManualInput_Click(object sender, EventArgs e)
+        {
+            using (var inputForm = new Form())
+            {
+                inputForm.Text = "手动输入地面站坐标";
+                inputForm.Width = 350;
+                inputForm.Height = 200;
+                inputForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+                inputForm.StartPosition = FormStartPosition.CenterParent;
+                inputForm.MaximizeBox = false;
+                inputForm.MinimizeBox = false;
+
+                var lblLat = new Label() { Left = 20, Top = 20, Width = 80, Text = "纬度 (°):" };
+                var txtLat = new TextBox() { Left = 110, Top = 20, Width = 200, Text = _thisData.Lat.ToString("F6") };
+
+                var lblLng = new Label() { Left = 20, Top = 50, Width = 80, Text = "经度 (°):" };
+                var txtLng = new TextBox() { Left = 110, Top = 50, Width = 200, Text = _thisData.Lng.ToString("F6") };
+
+                var lblAlt = new Label() { Left = 20, Top = 80, Width = 80, Text = "高度 (m):" };
+                var txtAlt = new TextBox() { Left = 110, Top = 80, Width = 200, Text = _thisData.Alt.ToString("F2") };
+
+                var btnOK = new Button() { Text = "确定", Left = 150, Width = 75, Top = 120, DialogResult = DialogResult.OK };
+                var btnCancel = new Button() { Text = "取消", Left = 235, Width = 75, Top = 120, DialogResult = DialogResult.Cancel };
+
+                inputForm.Controls.Add(lblLat);
+                inputForm.Controls.Add(txtLat);
+                inputForm.Controls.Add(lblLng);
+                inputForm.Controls.Add(txtLng);
+                inputForm.Controls.Add(lblAlt);
+                inputForm.Controls.Add(txtAlt);
+                inputForm.Controls.Add(btnOK);
+                inputForm.Controls.Add(btnCancel);
+
+                inputForm.AcceptButton = btnOK;
+                inputForm.CancelButton = btnCancel;
+
+                if (inputForm.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        double lat = double.Parse(txtLat.Text, CultureInfo.InvariantCulture);
+                        double lng = double.Parse(txtLng.Text, CultureInfo.InvariantCulture);
+                        double alt = double.Parse(txtAlt.Text, CultureInfo.InvariantCulture);
+
+                        if (lat < -90 || lat > 90)
+                        {
+                            CustomMessageBox.Show("纬度必须在 -90 到 90 之间", "输入错误");
+                            return;
+                        }
+
+                        if (lng < -180 || lng > 180)
+                        {
+                            CustomMessageBox.Show("经度必须在 -180 到 180 之间", "输入错误");
+                            return;
+                        }
+
+                        _thisData.Lat = lat;
+                        _thisData.Lng = lng;
+                        _thisData.Alt = alt;
+                        _thisData.Alt_WGS84 = alt;
+                        _thisData.IsManualOverride = true;
+                        _thisData.fix_type = 1;
+                        _thisData.sats = 0;
+                        _thisData.hdop = 0;
+
+                        last_gps_msg.Restart();
+                        LBL_gpsStatus.Text = String.Format("手动输入: {0:0.00000}, {1:0.00000}, {2:0.00} m", lat, lng, alt);
+
+                        Console.WriteLine("手动设置地面站坐标: " + lat + ", " + lng + ", " + alt);
+                    }
+                    catch (Exception ex)
+                    {
+                        CustomMessageBox.Show("输入格式错误: " + ex.Message, "错误");
+                    }
+                }
+            }
         }
 
         // Calculates the checksum for a sentence

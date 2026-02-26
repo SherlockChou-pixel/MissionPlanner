@@ -55,9 +55,6 @@ namespace MissionPlanner.Controls
 
             InitializeComponent();
 
-            CHK_use_home_operator_location.Checked = Settings.Instance.GetBoolean("ODID_UseHomeOperatorLocation", false);
-            nmea_GPS_1.Enabled = !CHK_use_home_operator_location.Checked;
-
             CMB_op_id_type.DisplayMember = "Value";
             CMB_op_id_type.ValueMember = "Key";
             CMB_op_id_type.DataSource = System.Enum.GetValues(typeof(MAVLink.MAV_ODID_OPERATOR_ID_TYPE));
@@ -77,13 +74,6 @@ namespace MissionPlanner.Controls
             myODID_Status._parent_ODID = this;
 
             start();
-        }
-
-        private void CHK_use_home_operator_location_CheckedChanged(object sender, EventArgs e)
-        {
-            Settings.Instance["ODID_UseHomeOperatorLocation"] = CHK_use_home_operator_location.Checked.ToString();
-            Settings.Instance.Save();
-            nmea_GPS_1.Enabled = !CHK_use_home_operator_location.Checked;
         }
 
         public void start()
