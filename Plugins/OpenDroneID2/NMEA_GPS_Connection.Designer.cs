@@ -109,7 +109,7 @@
             // CHK_use_home_operator_location
             // 
             this.CHK_use_home_operator_location.AutoSize = true;
-            this.CHK_use_home_operator_location.Location = new System.Drawing.Point(6, 60);
+            this.CHK_use_home_operator_location.Location = new System.Drawing.Point(6, 82);
             this.CHK_use_home_operator_location.Name = "CHK_use_home_operator_location";
             this.CHK_use_home_operator_location.Size = new System.Drawing.Size(155, 17);
             this.CHK_use_home_operator_location.TabIndex = 47;
@@ -121,21 +121,21 @@
             // LBL_use_home_operator_location_info
             // 
             this.LBL_use_home_operator_location_info.AutoSize = true;
-            this.LBL_use_home_operator_location_info.Location = new System.Drawing.Point(6, 77);
+            this.LBL_use_home_operator_location_info.Location = new System.Drawing.Point(24, 99);
             this.LBL_use_home_operator_location_info.Name = "LBL_use_home_operator_location_info";
-            this.LBL_use_home_operator_location_info.Size = new System.Drawing.Size(347, 26);
+            this.LBL_use_home_operator_location_info.Size = new System.Drawing.Size(250, 13);
             this.LBL_use_home_operator_location_info.TabIndex = 48;
-            this.LBL_use_home_operator_location_info.Text = "功能逻辑：勾选后，将无人机 Home 点(起飞位置)坐标映射为飞手(地面站)实时位置。\r\n适用于飞手基本保持在起飞位置、不发生明显移动的场景，可省去连接地面站GPS硬件。";
+            this.LBL_use_home_operator_location_info.Text = "勾选后：飞手位置 = Home(起飞点)";
 
             // 
             // LBL_manual_override_info
             // 
             this.LBL_manual_override_info.AutoSize = true;
-            this.LBL_manual_override_info.Location = new System.Drawing.Point(6, 103);
+            this.LBL_manual_override_info.Location = new System.Drawing.Point(24, 114);
             this.LBL_manual_override_info.Name = "LBL_manual_override_info";
-            this.LBL_manual_override_info.Size = new System.Drawing.Size(338, 26);
+            this.LBL_manual_override_info.Size = new System.Drawing.Size(290, 13);
             this.LBL_manual_override_info.TabIndex = 49;
-            this.LBL_manual_override_info.Text = "如当前环境无 GPS 信号/无法硬件定位，可右键“地面站定位”状态栏弹出坐标输入框，\r\n手动输入经度、纬度和高度，以人工指定虚拟坐标用于远程ID信息上报及相关功能。";
+            this.LBL_manual_override_info.Text = "无定位时：右键状态栏手动输入经纬度/高度";
             // 
             // groupBox1
             // 
